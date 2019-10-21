@@ -1,0 +1,14 @@
+[Unit]
+Description=Twitter Crawer
+
+[Service]
+ExecStart=/bin/bash /home/mike/repos/SentimentAnalyzer/service/systemd/crawler
+WorkingDirectory=/home/mike/repos/SentimentAnalyzer/
+
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

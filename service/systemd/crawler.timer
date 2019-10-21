@@ -1,0 +1,14 @@
+[Unit]
+Description=Get tweets every X minutes
+
+[Timer]
+OnUnitInactiveSec=5min
+AccuracySec=1s
+OnBootSec=0s
+Persistent=true
+; OnCalendar=*:0/1
+; OnUnitActiveSec=1min
+; RandomizedDelaySec=1h
+
+[Install]
+WantedBy=timers.target

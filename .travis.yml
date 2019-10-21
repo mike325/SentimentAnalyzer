@@ -1,0 +1,141 @@
+os: linux
+
+sudo: true
+
+language: python
+
+python:
+  - "3.6"
+  - "3.7"
+
+services:
+  - postgresql
+  - mysql
+
+cache: pip
+
+env:
+  - DB=sqlite
+  - DB=mysql
+  - DB=postgresql
+
+matrix:
+    include:
+      - name: "Python 3.6.5 on macOS with sqlite"
+        os: osx
+        osx_image: xcode9.4
+        language: shell       # 'language: python' is an error on Travis CI macOS
+        env:
+          - DB=sqlite
+          - PATH="/Users/travis/Library/Python/3.6/bin:$PATH"
+      - name: "Python 3.6.5 on macOS with mysql"
+        os: osx
+        language: shell       # 'language: python' is an error on Travis CI macOS
+        osx_image: xcode9.4
+        env:
+          - DB=mysql
+          - PATH="/Users/travis/Library/Python/3.6/bin:/usr/local/mysql/bin:$PATH"
+      - name: "Python 3.6.5 on macOS with postgresql"
+        os: osx
+        language: shell       # 'language: python' is an error on Travis CI macOS
+        osx_image: xcode9.4
+        env:
+          - DB=postgresql
+          - PATH="/Users/travis/Library/Python/3.6/bin:$PATH"
+        addons:
+          homebrew:
+            packages:
+              - postgresql
+      - name: "Python 3.7.4 on macOS with sqlite"
+        os: osx
+        language: shell       # 'language: python' is an error on Travis CI macOS
+        osx_image: xcode11
+        env:
+          - DB=sqlite
+          - PATH="/Users/travis/Library/Python/3.7/bin:$PATH"
+      - name: "Python 3.7.4 on macOS with mysql"
+        os: osx
+        language: shell       # 'language: python' is an error on Travis CI macOS
+        osx_image: xcode11
+        env:
+          - DB=mysql
+          - PATH="/Users/travis/Library/Python/3.7/bin:/usr/local/mysql/bin:$PATH"
+      - name: "Python 3.7.4 on macOS with postgresql"
+        os: osx
+        language: shell       # 'language: python' is an error on Travis CI macOS
+        osx_image: xcode11
+        env:
+          - DB=postgresql
+          - PATH="/Users/travis/Library/Python/3.7/bin:$PATH"
+        addons:
+          homebrew:
+            packages:
+              - postgresql
+      - name: "Python 3.6.8 on Windows with sqlite"
+        os: windows
+        language: shell       # 'language: python' is an error on Travis CI Windows
+        before_install:
+          - choco install python --version=3.6.8 -y
+        env:
+          - PATH="/c/Python36:/c/Python36/Scripts:$PATH"
+          - DB=sqlite
+      - name: "Python 3.6.8 on Windows with mysql"
+        os: windows
+        language: shell       # 'language: python' is an error on Travis CI Windows
+        before_install:
+          - choco install python --version=3.6.8 -y
+        env:
+          - PATH="/c/Python36:/c/Python36/Scripts:/c/tools/mysql/current/bin:$PATH"
+          - DB=mysql
+      - name: "Python 3.6.8 on Windows with postgresql"
+        os: windows
+        language: shell       # 'language: python' is an error on Travis CI Windows
+        before_install:
+          - choco install python --version=3.6.8 -y
+        env:
+          - PATH="/c/Python36:/c/Python36/Scripts:/c/Program Files/PostgreSQL/10/bin/:$PATH"
+          - PGPASSWORD=password
+          - DB=postgresql
+          - DB_PASSWORD=password
+      - name: "Python 3.7.4 on Windows with sqlite"
+        os: windows
+        language: shell       # 'language: python' is an error on Travis CI Windows
+        before_install:
+          - choco install python -y
+        env:
+          - PATH="/c/Python37:/c/Python37/Scripts:$PATH"
+          - DB=sqlite
+      - name: "Python 3.7.4 on Windows with mysql"
+        os: windows
+        language: shell       # 'language: python' is an error on Travis CI Windows
+        before_install:
+          - choco install python -y
+        env:
+          - PATH="/c/Python37:/c/Python37/Scripts:/c/tools/mysql/current/bin:$PATH"
+          - DB=mysql
+      - name: "Python 3.7.4 on Windows with postgresql"
+        os: windows
+        language: shell       # 'language: python' is an error on Travis CI Windows
+        before_install:
+          - choco install python -y
+        env:
+          - PATH="/c/Python37:/c/Python37/Scripts:/c/Program Files/PostgreSQL/10/bin:$PATH"
+          - PGPASSWORD=password
+          - DB=postgresql
+          - DB_PASSWORD=password
+
+install:
+  - bash -C 'test/requirements.sh'
+
+before_script:
+  - bash -C 'test/database.sh'
+
+script:
+  - bash -C 'test/test.sh'
+
+notifications:
+    email:
+      recipients:
+        - mickiller.25@gmail.com
+      on_success: never
+      on_failure: always

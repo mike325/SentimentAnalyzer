@@ -1,0 +1,225 @@
+name: analyzer
+
+on: [push, pull_request]
+
+jobs:
+  linux-build:
+
+    name: Sentiment Analyzer test with ${{ matrix.name }} on Linux
+    runs-on: ubuntu-latest
+
+    # TODO:PostgreSQL
+    strategy:
+      matrix:
+        name: [
+          python3.6-mysql,
+          python3.7-mysql
+        ]
+        include:
+          - name: python3.6-mysql
+            python: '3.6'
+          - name: python3.7-mysql
+            python: '3.7'
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: "root"
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    env:
+      GITHUB: true
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+            export DB_USER=root
+            export DB_PASSWORD=root
+            export DB_NAME=test_ci
+          else
+            export DB=sqlite
+          fi
+
+          bash -C 'test/requirements.sh'
+      - name: Setup databases
+        run: |
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+            export DB_USER=root
+            export DB_PASSWORD=root
+            export DB_NAME=test_ci
+          else
+            export DB=sqlite
+          fi
+
+          bash -C 'test/database.sh'
+      - name: Test with Django
+        env:
+          MINIO_URL: ${{ secrets.MINIO_URL }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          TWITTER_TOKEN_KEY: ${{ secrets.TWITTER_TOKEN_KEY }}
+          TWITTER_TOKEN_SECRET: ${{ secrets.TWITTER_TOKEN_SECRET }}
+        run: |
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+            export DB_USER=root
+            export DB_PASSWORD=root
+            export DB_NAME=test_ci
+          else
+            export DB=sqlite
+          fi
+
+          bash -C 'test/test.sh'
+
+  osx-build:
+
+    name: Sentiment Analyzer test with ${{ matrix.name }} on macOS
+    runs-on: macOS-latest
+
+    # TODO: PostgreSQL
+    strategy:
+      matrix:
+        name: [
+          python3.6-mysql,
+          python3.7-mysql
+        ]
+        include:
+          - name: python3.6-mysql
+            python: '3.6'
+          - name: python3.7-mysql
+            python: '3.7'
+
+    env:
+      GITHUB: true
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+          else
+            export DB=sqlite
+          fi
+
+          export PATH="/Users/runner/.local/bin:$PATH"
+          bash -C 'test/requirements.sh'
+
+      - name: Setup databases
+        run: |
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+          else
+            export DB=sqlite
+          fi
+
+          export PATH="/Users/runner/.local/bin:$PATH"
+          bash -C 'test/database.sh'
+      - name: Test with Django
+        env:
+          MINIO_URL: ${{ secrets.MINIO_URL }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          TWITTER_TOKEN_KEY: ${{ secrets.TWITTER_TOKEN_KEY }}
+          TWITTER_TOKEN_SECRET: ${{ secrets.TWITTER_TOKEN_SECRET }}
+        run: |
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+          else
+            export DB=sqlite
+          fi
+
+          export PATH="/Users/runner/.local/bin:$PATH"
+          bash -C 'test/test.sh'
+
+  windows-build:
+
+    name: Sentiment Analyzer test with ${{ matrix.name }} on Windows
+    runs-on: windows-latest
+
+    # TODO: PostgreSQL
+    strategy:
+      matrix:
+        name: [
+          python3.6-mysql,
+          python3.7-mysql
+        ]
+        include:
+          - name: python3.6-mysql
+            python: '3.6'
+          - name: python3.7-mysql
+            python: '3.7'
+
+    env:
+      GITHUB: true
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Enable Chocolatey
+        shell: powershell
+        run: |
+          Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+      - name: Install dependencies
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+          else
+            export DB=sqlite
+          fi
+
+          export PATH="/c/tools/mysql/current/bin:/c/tools/mysql/bin:$PATH"
+          bash -C 'test/requirements.sh'
+
+      - name: Setup databases
+        shell: bash
+        run: |
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+          else
+            export DB=sqlite
+          fi
+
+          export PATH="/c/tools/mysql/current/bin:/c/tools/mysql/bin:$PATH"
+          bash -C 'test/database.sh'
+      - name: Test with Django
+        shell: bash
+        env:
+          MINIO_URL: ${{ secrets.MINIO_URL }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          TWITTER_TOKEN_KEY: ${{ secrets.TWITTER_TOKEN_KEY }}
+          TWITTER_TOKEN_SECRET: ${{ secrets.TWITTER_TOKEN_SECRET }}
+        run: |
+          if [[ "${{ matrix.name }}" =~ .*-mysql ]]; then
+            export DB=mysql
+          else
+            export DB=sqlite
+          fi
+
+          export PATH="/c/tools/mysql/current/bin:/c/tools/mysql/bin:$PATH"
+          bash -C 'test/test.sh'
