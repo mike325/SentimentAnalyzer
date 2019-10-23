@@ -155,21 +155,21 @@ def _parseArgs():
                         dest='pull',
                         type=int,
                         default=100,
-                        help='Change the default number of tweets to pull')
+                        help='Number of post to pull each query')
 
     parser.add_argument('-t',
                         '--trend',
                         dest='trend',
                         type=str,
                         default=None,
-                        help='Activate trends')
+                        help='Search for "trending topics" in a given area/country')
 
     parser.add_argument('-n',
                         '--network',
                         dest='network',
                         type=str,
                         default='twitter',
-                        help='Social network where the data will be fetched')
+                        help='Social network from where the data will be fetched')
 
     return parser.parse_args()
 

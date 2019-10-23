@@ -18,6 +18,8 @@ ToDo list
   - [X] Enable dummy random analyzer
   - [ ] Enable real sentiment analyzer
 
+## REST API
+
 To run the project locally first be sure to have a
 [twitter API](https://developer.twitter.com/en/apply-for-access) onces you have access install [python>=3.6](https://www.python.org/downloads/) and all development dependencies with
 
@@ -25,6 +27,7 @@ To run the project locally first be sure to have a
 $ # Virtual environments are the recommended way to test this project
 $ virtualenv -p python3 ./env && source ./env/bin/activate # or ./env/Scripts/activate for Windows
 (env)$ pip3 install -r requirements/requirements.txt
+(env)$ python manage.py migrate # create the database
 (env)$ # if you want to run the tests, install the dev dependencies
 (env)$ pip3 install -r requirements/dev.txt # dev_windows.txt for Windows
 (env)$ bash -C 'test/test.sh'
@@ -56,3 +59,19 @@ Note: The environment variable will be preferred than the json file.
 Finally to test the API run `python3 manage.py runserver` and the local server
 should be available at `localhost:8000`, the admin is in /admin/ and the API
 entry point is in /api/
+
+## Crawler
+
+The system also supports "standalone" use of the crawler, so far the crawler
+needs Django's the database capabilities that's the reason it's not fully
+independent script, to use the crawler script to pull social network data
+(Twitter at this point) use the following commands
+
+```sh
+$ # Virtual environments are the recommended way to test this project
+$ virtualenv -p python3 ./env && source ./env/bin/activate # or ./env/Scripts/activate for Windows
+(env)$ pip3 install -r requirements/requirements.txt # if they are not installed yet
+(env)$ python manage.py migrate # If the database hasn't been created
+(env)$ python ./server/apps/crawler/apps.py --help # To get all available options
+(env)$ python ./server/apps/crawler/apps.py --query "#foo" --trend Mexico --network twitter
+```
