@@ -325,11 +325,7 @@ if ! eval "$pip -r requirements/requirements.txt"; then
 fi
 
 status_msg "Installing development modules"
-if is_windows; then
-    filename="requirements/dev_windows.txt"
-else
-    filename="requirements/dev.txt"
-fi
+filename="requirements/dev.txt"
 
 if ! eval "$pip -r $filename"; then
     error_msg "Fail to install development modules"
