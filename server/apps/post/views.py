@@ -152,7 +152,7 @@ class TopicViewSet(viewsets.ModelViewSet):
     serializer_class = TopicSerializer
 
     @action(detail=True, methods=['post'], name='Analyze sentiments of topics')
-    def analyse(self, request: rest_framework.request.Request, pk=None):
+    def analyze(self, request: rest_framework.request.Request, pk=None):
         """TODO: Docstring for .
 
         :request: TODO
@@ -196,7 +196,7 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
     @action(detail=True, methods=['post'], name='Get User by date')
-    def analyse(self, request: rest_framework.request.Request, pk=None):
+    def analyze(self, request: rest_framework.request.Request, pk=None):
         """TODO: Docstring for .
 
         :request: TODO
@@ -215,7 +215,7 @@ class PlatformViewSet(viewsets.ModelViewSet):
     serializer_class = PlatformSerializer
 
     @action(detail=True, methods=['post'], name='Get Platform by date')
-    def analyse(self, request: rest_framework.request.Request, pk=None):
+    def analyze(self, request: rest_framework.request.Request, pk=None):
         """TODO: Docstring for .
 
         :request: TODO
