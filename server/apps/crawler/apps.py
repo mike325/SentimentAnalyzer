@@ -220,14 +220,14 @@ def main():
 
     repeats = args.repeats
     querys = None if args.query is None else args.query.split(',')
-    places = None if args.trend is None else args.trend.split(',')
+    # places = None if args.trend is None else args.trend.split(',')
     language = 'es' if args.language is None else args.language
     pull = 100 if args.pull is None else args.pull
     network = args.network.split(',')
 
     crawler = Crawler(network=network)
 
-    return crawler.crawl(querys=querys, places=places, repeats=repeats, count=pull, language=language)
+    return crawler.crawl(querys=querys, places=None, repeats=repeats, count=pull, language=language)
 
 
 if __name__ == "__main__":
