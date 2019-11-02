@@ -58,7 +58,7 @@ Once the API tokens are created, you could test the system with:
 
 ```sh
 (env)$ # if you want to run the tests, install the dev dependencies
-(env)$ pip3 install -r requirements/dev.txt # dev_windows.txt for Windows
+(env)$ pip3 install -r requirements/dev.txt
 (env)$ bash -C 'test/test.sh'
 ```
 
@@ -82,14 +82,14 @@ $ virtualenv -p python3 ./env && source ./env/bin/activate # or ./env/Scripts/ac
 (env)$ pip3 install -r requirements/requirements.txt # if they are not installed yet
 (env)$ python manage.py migrate # If the database hasn't been created
 (env)$ python ./server/apps/crawler/apps.py --help # To get all available options
-(env)$ python ./server/apps/crawler/apps.py --query "#foo" --trend Mexico --network twitter
+(env)$ python ./server/apps/crawler/apps.py --query "#foo" --network twitter
 ```
 
 ## FAQ
 
-### Cool, How could I get data from the API?
+### Q: Cool, How could I get data from the API?
 **A:** After the project is running you could get data from the available
-analyzers doing a POST request to /api/topic/<TOPIC_ID>/analyze
+analyzers doing a POST request to `/api/topic/<TOPIC_ID>/analyze`
 
 
 The POST request must be a json with the following data
@@ -110,7 +110,7 @@ date up to today or analyze every date from the dawn to the "end" date
 
 **NOTE**: Please take into consideration
 
-### How can I add new analyzers?
+### Q: How can I add new analyzers?
 **A:** The system is dynamic, so add new analyzers it's quite simple,
 all modules inside `server/nlp/` with a py file named `analyzer` with method named
 `analyze`  with will be candidates to be used by de API, the `analyze` method
@@ -118,7 +118,7 @@ must receive and argument of type `django.db.model.Model` and must return a
 dictionary with the results take a look at `server/nlp/random` to get a glance
 of how it should be structured.
 
-### When the project will be ready to test it out?
+### Q: When the project will be ready to test it out?
 **A:** The project is in a very early stage (pre-alpha at best), even tho
 there's no date for a "official" release I hope the API is stabilized this year
 so anyone could use the project without any breaking changes every commit.
