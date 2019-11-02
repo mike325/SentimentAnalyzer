@@ -344,7 +344,7 @@ EOF
 fi
 
 status_msg 'Running Django tests'
-if ! $python manage.py test; then
+if ! $python manage.py test --tag=init ; then
     error_msg 'Django tests failed'
     if [[ $_IGNORE -eq 0 ]]; then
         exit 6
