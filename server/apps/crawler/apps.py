@@ -70,9 +70,9 @@ class Crawler(object):
         if 'network' not in kwards:
             raise Exception('No social network specified')
 
-        if type(kwards['network']) == list:
+        if isinstance(kwards['network'], list):
             networks = kwards['network']
-        elif type(kwards['network']) == str:
+        elif isinstance(kwards['network'], str):
             networks = [kwards['network']]
         else:
             raise Exception('Network value must be either a list or a string')

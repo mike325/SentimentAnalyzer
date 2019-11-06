@@ -86,6 +86,7 @@ class Network(object):
             platform = Platform(name=name)
             platform.save()
 
+        log.debug(f'Using {platform.name}')
         return platform
 
     def get_or_create_network(self):
@@ -129,6 +130,8 @@ class Network(object):
 
         """
         if self.post_exists(id, text):
+            post = Post.objects.get(post_id=id)
+        else:
             log.debug(f'Creating new post: {id}')
             post = Post()
             post.post_id = id
@@ -142,8 +145,8 @@ class Network(object):
             post.network = network
             post.platform = platform
             post.save()
-        else:
-            post = Post.objects.get(post_id=id)
+
+        log.debug(f'Using {post.post_id}')
 
         return post
 
@@ -180,13 +183,17 @@ class Network(object):
 
         return Platform.objects.filter(name=name).exists()
 
-    def post_exists(self, id: str, text: str = ""):
+    def post_exists(self, id: str = "", text: str = ""):
         """TODO: Docstring for get_user.
         :returns: TODO
 
         """
+        if text == "" and  id == "":
+            raise Exception('Text and id connot be both empty')
         if text == "":
             return Post.objects.filter(post_id=id).exists()
+        elif id == "":
+            return Post.objects.filter(text=text).exists()
         return Post.objects.filter(post_id=id, text=text).exists()
 
     def stream_search(self, query: str, language: str, **kwards):

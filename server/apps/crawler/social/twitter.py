@@ -107,7 +107,8 @@ class Twitter(Network):
         query = query.lower()
         tweets = self.api.search(query, lang=language, count=count, tweet_mode='extended')
 
-        log.debug(f'Getting search for {query}; fetch {len(tweets)}')
+        log.debug(f'Getting search for {query}')
+        log.debug(f'{len(tweets)} fetched')
 
         if len(tweets) == 0:
             log.debug('No results were return')
@@ -122,10 +123,11 @@ class Twitter(Network):
             except AttributeError:
                 text = tweet.full_text
 
-            if self.post_exists(tweet.id, text):
+            log.debug(f'Looking for {tweet.id}')
+            if not self.post_exists(tweet.id) and not self.post_exists(text=text):
 
                 platform = self.get_or_create_platform(tweet.source)
-                user = self.get_or_create_user(tweet.user.id, tweet.user.name, tweet.user.screen_name, tweet.user.friends_count, network)
+                user = self.get_or_create_user(tweet.user.id, tweet.user.name, tweet.user.screen_name, tweet.user.friends_count, tweet.user.verified, network)
 
                 log.debug(f'Adding new Topic to Post: {topic.topic}')
                 post = self.get_or_create_post(tweet.id, text, tweet.retweet_count, tweet.created_at, tweet.favorite_count, language, user, network, platform)
@@ -136,13 +138,14 @@ class Twitter(Network):
                         topic = self.get_or_create_topic(query)
                         post.topics.add(topic)
                 post.save()
-            elif self.post_exists(tweet.id):
+            elif self.post_exists(tweet.id) and not Post.objects.filter(topic__topic=query).exists():
                 post = Post.objects.get(post_id=tweet.id)
                 post.favorite = tweet.favorite_count
                 post.shares = tweet.retweet_count
                 post.save()
                 log.debug(f'Adding new Topic to Post: {topic.topic}')
                 post.topics.add(topic)
+                post.save()
 
         return tweets
 
@@ -155,10 +158,10 @@ class Twitter(Network):
             log.error('Repeats must be an integer greater than 0')
             return -1
 
-        if querys is list and len(querys) > 0:
+        if isinstance(querys, list) and len(querys) > 0:
             log.debug(f'Querys {",".join(querys)}')
 
-        if places is list and len(places) > 0:
+        if isinstance(places, list) and len(places) > 0:
             log.debug(f'Places {",".join(places)}')
 
         for i in range(0, repeats):
