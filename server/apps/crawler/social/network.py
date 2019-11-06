@@ -188,7 +188,7 @@ class Network(object):
         :returns: TODO
 
         """
-        if text == "" and  id == "":
+        if text == "" and id == "":
             raise Exception('Text and id connot be both empty')
         if text == "":
             return Post.objects.filter(post_id=id).exists()
