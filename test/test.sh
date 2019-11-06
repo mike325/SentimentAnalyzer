@@ -361,6 +361,7 @@ fi
 export PYTHONPATH="$(pwd -P)/server:$PYTHONPATH"
 
 status_msg 'Test standalone script'
+warn_msg "Trend extraction is temporally disable"
 if ! $python ./server/apps/crawler/apps.py --query "#amlo,#jalisco" --trend "Mexico" --logging "info" --pull 3; then
     error_msg 'Standalone script fail'
     if [[ $_IGNORE -eq 0 ]]; then

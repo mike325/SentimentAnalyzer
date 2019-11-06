@@ -313,13 +313,13 @@ fi
 
 status_msg "Installing requirements"
 if is_osx; then
-    pip="pip3 install --user "
+    pip_install="pip3 install --user "
 else
-    pip="pip3 install "
+    pip_install="pip3 install "
 fi
 
 status_msg "Installing requirements"
-if ! eval "$pip -r requirements/requirements.txt"; then
+if ! eval "$pip_install -r requirements/requirements.txt"; then
     error_msg "Fail to install requirements"
     exit 1
 fi
@@ -327,14 +327,18 @@ fi
 status_msg "Installing development modules"
 filename="requirements/dev.txt"
 
-if ! eval "$pip -r $filename"; then
+if ! eval "$pip_install -r $filename"; then
     error_msg "Fail to install development modules"
     exit 1
 fi
 
+if ! is_windows; then
+    eval "$pip_install flake8-mypy"
+fi
+
 status_msg "Installing database modules"
 if [[ $DB == 'postgresql' ]]; then
-    if ! eval "$pip psycopg2"; then
+    if ! eval "$pip_install psycopg2"; then
         error_msg "Fail to install postgres python module"
         exit 1
     fi
@@ -345,7 +349,7 @@ elif [[ $DB == 'mysql' ]]; then
         export CPPFLAGS="-I/usr/local/opt/openssl/include"
     fi
 
-    if ! eval "$pip mysqlclient"; then
+    if ! eval "$pip_install mysqlclient"; then
         error_msg "Fail to install mysql python module"
         exit 1
     fi
