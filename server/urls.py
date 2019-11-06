@@ -24,6 +24,7 @@ from server.apps.post.views import PostViewSet
 from server.apps.post.views import TopicViewSet
 from server.apps.post.views import UserViewSet
 from server.apps.post.views import PlatformViewSet
+from server.nlp import views as nlp_views
 # from server.apps.post.views import LocationViewSet
 
 router = routers.DefaultRouter()
@@ -32,10 +33,12 @@ router.register(r'post', PostViewSet)
 router.register(r'topic', TopicViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'platform', PlatformViewSet)
+# router.register(r'nlp/list', nlp_views.method_list)
 # router.register(r'location', LocationViewSet)
 
 urlpatterns = [
     path(r'admin/', admin.site.urls),
+    path(r'api/nlp/list', nlp_views.method_list),
     path(r'api/', include(router.urls)),
     path(r'api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

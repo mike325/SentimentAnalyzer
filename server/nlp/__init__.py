@@ -27,6 +27,34 @@ _author = 'Mike'
 _mail = 'mickiller.25@gmail.com'
 
 
+def list():
+    """TODO: Docstring for list.
+    :returns: TODO
+
+    """
+    import os
+    import traceback
+    import importlib
+
+    location = os.path.dirname(os.path.abspath(__file__))
+    debug = True if 'DEBUG' in os.environ else False
+    modules = []
+
+    _, dirs, __ = next(os.walk(location))
+
+    for candidate in dirs:
+        try:
+            analyzer = importlib.import_module('.' + candidate + '.analyzer', __name__)
+            _ = analyzer.__getattribute__('analyze')
+        except Exception:
+            if debug:
+                traceback.print_exc()
+        else:
+            modules += [candidate]
+
+    return modules
+
+
 def get(module: str):
     """
 
