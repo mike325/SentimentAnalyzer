@@ -17,7 +17,7 @@ djangorestframework-oauth
 
 gunicorn==19.9.0
 
-Pillow==6.2.0
+Pillow==8.1.1
 pytz==2018.7
 Unipath==1.1
 whitenoise==4.1.2
