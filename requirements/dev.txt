@@ -12,5 +12,5 @@ python-language-server>=0.21.5
 pynvim>=0.3.1
 neovim-remote>=2.0.10
 
-requests==2.21.0
+requests==2.31.0
 httpie>=1.0.3
